@@ -1,6 +1,6 @@
 {
   "name": "gladys-knx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "KNX for Gladys Assistant over KNXnet/IP tunnelling (UDP or TCP): lights, dimmers, shutters, switches, sensors and thermostats by group address, scene triggers on group telegrams, a send-group-value scene action and a bus monitor widget.",
   "type": "module",

@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-14
+
 ### Added
 
 - KNXnet/IP tunnelling to a KNX IP interface or router on the local network,
@@ -33,3 +35,6 @@ the notes of the version's GitHub Release.
   included.
 - Dashboard widget "KNX bus": the tunnel state and the last telegrams.
 - "Test the gateway" button: the gateway's description and a short tunnel.
+
+[Unreleased]: https://github.com/LM1LC3N7/gladys-knx/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/LM1LC3N7/gladys-knx/releases/tag/v0.1.1
