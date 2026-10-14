@@ -1,0 +1,468 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "KNX",
+  "description": {
+    "en": "Unofficial connector: KNX lights, shutters, sensors, thermostats by group address over KNXnet/IP.",
+    "fr": "Connecteur non officiel : lumières, volets, capteurs, thermostats KNX par adresse de groupe."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/lm1lc3n7/gladys-knx:0.1.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/LM1LC3N7/gladys-knx/main/cover.png",
+  "categories": ["protocols", "lighting", "climate"],
+  "transports": ["local"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "KNX in Gladys",
+        "fr": "Le KNX dans Gladys"
+      },
+      "description": {
+        "en": "Unofficial connector, not affiliated with the KNX Association. It talks to your KNXnet/IP interface or router on the local network through a tunnel (UDP, or TCP with KNXnet/IP 2), no cloud, no ETS needed: list your lights, dimmers, shutters, switches, sensors and thermostats with their group addresses below, then add them in Discovery. Every group telegram of the bus can start a scene, and a scene can send any group value. Multicast routing (224.0.23.12) cannot reach the integration's container: a router is used in tunnelling mode. KNX is a trademark of the KNX Association.",
+        "fr": "Connecteur non officiel, sans lien avec la KNX Association. Il parle à votre interface ou routeur KNXnet/IP sur le réseau local par un tunnel (UDP, ou TCP en KNXnet/IP 2), sans cloud et sans ETS : listez ci-dessous vos lumières, variateurs, volets, interrupteurs, capteurs et thermostats avec leurs adresses de groupe, puis ajoutez-les dans Découverte. Chaque télégramme de groupe du bus peut démarrer une scène, et une scène peut envoyer n'importe quelle valeur de groupe. Le routage multicast (224.0.23.12) n'atteint pas le conteneur de l'intégration : un routeur est utilisé en mode tunnel. KNX est une marque de la KNX Association."
+      },
+      "links": [
+        {
+          "url": "https://github.com/LM1LC3N7/gladys-knx/blob/main/docs/fr.md",
+          "label": {
+            "en": "Guide (French)",
+            "fr": "Guide (français)"
+          }
+        },
+        {
+          "url": "https://github.com/LM1LC3N7/gladys-knx/blob/main/docs/en.md",
+          "label": {
+            "en": "Guide (English)",
+            "fr": "Guide (anglais)"
+          }
+        },
+        {
+          "url": "https://www.knx.org/explore-knx/what-is-knx",
+          "label": {
+            "en": "What is KNX (KNX Association)",
+            "fr": "Qu'est-ce que le KNX (KNX Association)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "host",
+      "type": "string",
+      "required": true,
+      "label": {
+        "en": "Gateway address",
+        "fr": "Adresse de la passerelle"
+      },
+      "description": {
+        "en": "The IP address of the KNXnet/IP interface or router on your network (fix it in your router's DHCP).",
+        "fr": "L'adresse IP de l'interface ou du routeur KNXnet/IP sur votre réseau (fixez-la dans le DHCP de votre box)."
+      },
+      "placeholder": {
+        "en": "192.168.1.50",
+        "fr": "192.168.1.50"
+      }
+    },
+    {
+      "key": "port",
+      "type": "number",
+      "required": false,
+      "default": 3671,
+      "min": 1,
+      "max": 65535,
+      "label": {
+        "en": "Port",
+        "fr": "Port"
+      },
+      "description": {
+        "en": "3671, the KNXnet/IP port, unless your gateway was set up otherwise.",
+        "fr": "3671, le port KNXnet/IP, sauf si votre passerelle a été configurée autrement."
+      }
+    },
+    {
+      "key": "protocol",
+      "type": "select",
+      "required": false,
+      "default": "udp",
+      "display": "radio",
+      "label": {
+        "en": "Tunnelling over",
+        "fr": "Tunnel en"
+      },
+      "options": [
+        {
+          "value": "udp",
+          "label": {
+            "en": "UDP (every KNXnet/IP gateway)",
+            "fr": "UDP (toutes les passerelles KNXnet/IP)"
+          }
+        },
+        {
+          "value": "tcp",
+          "label": {
+            "en": "TCP (KNXnet/IP 2 gateways only)",
+            "fr": "TCP (passerelles KNXnet/IP 2 uniquement)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "devices",
+      "type": "string",
+      "required": false,
+      "label": {
+        "en": "Devices",
+        "fr": "Appareils"
+      },
+      "description": {
+        "en": "One device per line (or separated by commas): type; name; key=group address; ... light: switch, state. dimmer: switch, state, brightness, brightness_state. shutter: move, stop, position, position_state, invert. switch: switch, state. sensor: temperature, humidity, illuminance, co2, wind, pressure, power, energy, voltage, current, counter (another DPT after @, e.g. power=4/1/5@9.024). thermostat: setpoint, setpoint_state, temperature, mode, mode_state, heating. binary: contact, motion, presence, smoke, leak, invert. Addresses as 1/2/3, 1/515 or 2563. The guide has examples; mistakes are shown in the status above.",
+        "fr": "Un appareil par ligne (ou séparés par des virgules) : type; nom; clé=adresse de groupe; ... light : switch, state. dimmer : switch, state, brightness, brightness_state. shutter : move, stop, position, position_state, invert. switch : switch, state. sensor : temperature, humidity, illuminance, co2, wind, pressure, power, energy, voltage, current, counter (un autre DPT après @, ex. power=4/1/5@9.024). thermostat : setpoint, setpoint_state, temperature, mode, mode_state, heating. binary : contact, motion, presence, smoke, leak, invert. Adresses en 1/2/3, 1/515 ou 2563. Le guide donne des exemples ; les erreurs s'affichent dans l'état ci-dessus."
+      },
+      "placeholder": {
+        "en": "light; Living room; switch=1/1/1; state=1/1/2, shutter; Bedroom; move=2/1/1; stop=2/1/2",
+        "fr": "light; Salon; switch=1/1/1; state=1/1/2, shutter; Chambre; move=2/1/1; stop=2/1/2"
+      }
+    },
+    {
+      "key": "address_style",
+      "type": "select",
+      "required": false,
+      "default": "three_level",
+      "label": {
+        "en": "Group address style (scenes, widget)",
+        "fr": "Style des adresses de groupe (scènes, widget)"
+      },
+      "description": {
+        "en": "How the trigger writes the group addresses: type them the same way in your scenes.",
+        "fr": "La façon dont le déclencheur écrit les adresses de groupe : saisissez-les de la même façon dans vos scènes."
+      },
+      "options": [
+        {
+          "value": "three_level",
+          "label": {
+            "en": "Three levels (1/2/3)",
+            "fr": "Trois niveaux (1/2/3)"
+          }
+        },
+        {
+          "value": "two_level",
+          "label": {
+            "en": "Two levels (1/515)",
+            "fr": "Deux niveaux (1/515)"
+          }
+        },
+        {
+          "value": "free",
+          "label": {
+            "en": "Free (2563)",
+            "fr": "Libre (2563)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "event_addresses",
+      "type": "string",
+      "required": false,
+      "label": {
+        "en": "Group addresses that fire the trigger",
+        "fr": "Adresses de groupe qui déclenchent"
+      },
+      "description": {
+        "en": "Optional, separated by commas: only these addresses start scenes. Empty: every group write seen on the bus (120 events a minute at most).",
+        "fr": "Facultatif, séparées par des virgules : seules ces adresses démarrent des scènes. Vide : toute écriture de groupe vue sur le bus (120 événements par minute au plus)."
+      },
+      "placeholder": {
+        "en": "7/1/1, 7/1/2",
+        "fr": "7/1/1, 7/1/2"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_gateway",
+      "timeout_seconds": 30,
+      "label": {
+        "en": "Test the gateway",
+        "fr": "Tester la passerelle"
+      },
+      "description": {
+        "en": "Asks the gateway for its description and opens then closes a tunnel (only the description while the integration's tunnel is open).",
+        "fr": "Demande sa description à la passerelle puis ouvre et referme un tunnel (seulement la description quand le tunnel de l'intégration est ouvert)."
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "key": "bus_monitor",
+      "label": {
+        "en": "KNX bus",
+        "fr": "Bus KNX"
+      },
+      "description": {
+        "en": "The state of the tunnel and the last group telegrams seen on the bus, to find an address.",
+        "fr": "L'état du tunnel et les derniers télégrammes de groupe vus sur le bus, pour trouver une adresse."
+      },
+      "icon": "activity"
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "group_value_received",
+      "label": {
+        "en": "KNX group value received",
+        "fr": "Valeur de groupe KNX reçue"
+      },
+      "description": {
+        "en": "A device of the bus wrote to a group address (a push button, a central command, a sensor). The answers to reads do not count.",
+        "fr": "Un appareil du bus a écrit sur une adresse de groupe (un bouton poussoir, une commande centrale, un capteur). Les réponses aux lectures ne comptent pas."
+      },
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Group address (empty: any)",
+            "fr": "Adresse de groupe (vide : toutes)"
+          },
+          "placeholder": {
+            "en": "7/1/1",
+            "fr": "7/1/1"
+          }
+        },
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Device (empty: any)",
+            "fr": "Appareil (vide : tous)"
+          }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Value (empty: any): 1, 0, 21.5, comfort...",
+            "fr": "Valeur (vide : toutes) : 1, 0, 21.5, comfort..."
+          },
+          "placeholder": {
+            "en": "1",
+            "fr": "1"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe"
+          }
+        },
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil"
+          }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "Value (text)",
+            "fr": "Valeur (texte)"
+          }
+        },
+        {
+          "key": "number",
+          "type": "number",
+          "label": {
+            "en": "Value (number)",
+            "fr": "Valeur (nombre)"
+          }
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "label": {
+            "en": "Raw value (hex)",
+            "fr": "Valeur brute (hexa)"
+          }
+        },
+        {
+          "key": "dpt",
+          "type": "string",
+          "label": {
+            "en": "DPT",
+            "fr": "DPT"
+          }
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "label": {
+            "en": "Sender (individual address)",
+            "fr": "Émetteur (adresse physique)"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "send_group_value",
+      "label": {
+        "en": "Send a KNX group value",
+        "fr": "Envoyer une valeur de groupe KNX"
+      },
+      "description": {
+        "en": "Writes a value to a group address, encoded with the chosen DPT.",
+        "fr": "Écrit une valeur sur une adresse de groupe, encodée selon le DPT choisi."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe"
+          },
+          "placeholder": {
+            "en": "1/1/1",
+            "fr": "1/1/1"
+          }
+        },
+        {
+          "key": "dpt",
+          "type": "select",
+          "required": true,
+          "label": {
+            "en": "Datapoint type (DPT)",
+            "fr": "Type de point de données (DPT)"
+          },
+          "options": [
+            {
+              "value": "1",
+              "label": {
+                "en": "1.x: one bit (1/on/down/close or 0/off/up/open)",
+                "fr": "1.x : un bit (1/on/down/close ou 0/off/up/open)"
+              }
+            },
+            {
+              "value": "3.007",
+              "label": {
+                "en": "3.007: dimming step (+1 to +7, -1 to -7, stop)",
+                "fr": "3.007 : pas de variation (+1 à +7, -1 à -7, stop)"
+              }
+            },
+            {
+              "value": "5.001",
+              "label": {
+                "en": "5.001: percentage (0 to 100)",
+                "fr": "5.001 : pourcentage (0 à 100)"
+              }
+            },
+            {
+              "value": "5.010",
+              "label": {
+                "en": "5.010: counter (0 to 255)",
+                "fr": "5.010 : compteur (0 à 255)"
+              }
+            },
+            {
+              "value": "9",
+              "label": {
+                "en": "9.x: 2-byte float (temperature, lux...)",
+                "fr": "9.x : flottant 2 octets (température, lux...)"
+              }
+            },
+            {
+              "value": "13",
+              "label": {
+                "en": "13.x: 4-byte integer (energy...)",
+                "fr": "13.x : entier 4 octets (énergie...)"
+              }
+            },
+            {
+              "value": "14",
+              "label": {
+                "en": "14.x: 4-byte float (power, voltage...)",
+                "fr": "14.x : flottant 4 octets (puissance, tension...)"
+              }
+            },
+            {
+              "value": "17.001",
+              "label": {
+                "en": "17.001: scene number (1 to 64)",
+                "fr": "17.001 : numéro de scène (1 à 64)"
+              }
+            },
+            {
+              "value": "18.001",
+              "label": {
+                "en": "18.001: scene control (5, or learn 5)",
+                "fr": "18.001 : commande de scène (5, ou learn 5)"
+              }
+            },
+            {
+              "value": "20.102",
+              "label": {
+                "en": "20.102: HVAC mode (auto, comfort, standby, economy, building_protection)",
+                "fr": "20.102 : mode CVC (auto, comfort, standby, economy, building_protection)"
+              }
+            },
+            {
+              "value": "raw",
+              "label": {
+                "en": "Raw octets in hex (0C 1A)",
+                "fr": "Octets bruts en hexadécimal (0C 1A)"
+              }
+            }
+          ]
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Value",
+            "fr": "Valeur"
+          },
+          "placeholder": {
+            "en": "1",
+            "fr": "1"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "group_address",
+          "type": "string",
+          "label": {
+            "en": "Group address",
+            "fr": "Adresse de groupe"
+          }
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "label": {
+            "en": "Octets sent (hex)",
+            "fr": "Octets envoyés (hexa)"
+          }
+        }
+      ]
+    }
+  ]
+}
